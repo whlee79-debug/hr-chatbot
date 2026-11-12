@@ -1,0 +1,9 @@
+# 비밀 정보 — 절대 커밋 금지
+.env
+
+# 로컬 캐시/환경
+.venv/
+__pycache__/
+file_ids.json
+.DS_Store
+.claude/

@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>원호 리더의 HR 정책상담</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root {
+    --bg: #f4f5f7;
+    --card: #ffffff;
+    --primary: #16a34a;
+    --primary-dark: #15803d;
+    --primary-soft: #dcfce7;
+    --text: #111827;
+    --muted: #9ca3af;
+    --ink2: #6b7280;
+    --border: #e8eaed;
+    --error: #dc2626;
+    --serif: "Inter", "Pretendard", system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif;
+    --sans: "Inter", "Pretendard", system-ui, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1115; --card: #171a1f; --primary: #22c55e; --primary-dark: #4ade80; --primary-soft: rgba(34,197,94,.16);
+      --text: #f3f4f6; --muted: #6b7280; --ink2: #9ca3af;
+      --border: #242830; --error: #f87171;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html { -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+  }
+  .label {
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--muted);
+  }
+
+  /* ===================== 사이드바 (대시보드와 동일) ===================== */
+  .sidebar{
+    width:240px; flex-shrink:0; background:var(--card);
+    border-right:1px solid var(--border); height:100vh;
+    display:flex; flex-direction:column; padding:20px 14px; gap:6px;
+  }
+  .sidebar .brand{
+    display:flex; align-items:center; gap:11px; text-decoration:none; color:var(--text);
+    padding:6px 10px 18px; margin-bottom:6px; border-bottom:1px solid var(--border);
+  }
+  .sidebar .brand .logo{
+    width:34px; height:34px; border-radius:9px; background:var(--primary); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:17px; flex-shrink:0;
+  }
+  .sidebar .brand b{ font-size:14.5px; font-weight:700; letter-spacing:-0.01em; display:block; }
+  .sidebar .brand small{ font-size:11px; color:var(--muted); font-weight:500; }
+  .side-nav{ display:flex; flex-direction:column; gap:3px; margin-top:8px; }
+  .side-group{ font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--muted); padding:14px 11px 5px; }
+  .side-group:first-child{ padding-top:4px; }
+  .side-nav a{
+    display:flex; align-items:center; gap:11px; padding:9px 11px; border-radius:9px;
+    text-decoration:none; color:var(--ink2); font-size:13.5px; font-weight:500;
+    transition:background .15s, color .15s;
+  }
+  .side-nav a svg{ width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:1.9; flex-shrink:0; }
+  .side-nav a:hover{ background:var(--bg); color:var(--text); }
+  .side-nav a.active{ background:var(--primary); color:#fff; font-weight:600; }
+  .side-foot{ margin-top:auto; display:flex; flex-direction:column; gap:3px; padding-top:12px; border-top:1px solid var(--border); }
+  .side-foot a{
+    display:flex; align-items:center; gap:11px; padding:9px 11px; border-radius:9px;
+    text-decoration:none; color:var(--ink2); font-size:13px; font-weight:500; transition:background .15s;
+  }
+  .side-foot a svg{ width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:1.9; flex-shrink:0; }
+  .side-foot a:hover{ background:var(--bg); color:var(--text); }
+  @media (max-width:860px){
+    body{ flex-direction:column; }
+    .sidebar{
+      width:100%; height:auto; flex-direction:row; align-items:center;
+      padding:10px 14px; gap:4px; overflow-x:auto; border-right:none; border-bottom:1px solid var(--border);
+    }
+    .sidebar .brand{ border:none; padding:0 14px 0 4px; margin:0; flex-shrink:0; }
+    .sidebar .brand small{ display:none; }
+    .side-nav{ flex-direction:row; margin:0; gap:2px; }
+    .side-nav a{ padding:8px 12px; white-space:nowrap; }
+    .side-nav a svg{ display:none; }
+    .side-foot{ flex-direction:row; margin:0 0 0 auto; padding:0; border:none; }
+    .side-foot a span.ftxt{ display:none; }
+  }
+
+  /* ===================== 채팅 화면 ===================== */
+  #app { flex:1; min-width:0; min-height:0; display: flex; flex-direction: column; }
+
+  header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .head-left { display: flex; align-items: center; gap: 12px; }
+  .head-mark {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--primary);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .head-mark svg { width: 19px; height: 19px; stroke: #fff; }
+  header h1 { font-family: var(--serif); font-size: 16px; font-weight: 700; letter-spacing: -0.01em; }
+  header p {
+    font-size: 12px; font-weight: 500;
+    color: var(--muted); margin-top: 2px;
+  }
+  .head-right { display: flex; align-items: center; gap: 8px; }
+  .portal-link {
+    font-size: 13px; font-weight: 500;
+    color: var(--ink2);
+    text-decoration: none;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 8px 14px;
+    white-space: nowrap;
+    transition: color .2s, border-color .2s, background .2s;
+  }
+  .portal-link:hover { color: var(--primary); border-color: var(--primary); background: var(--primary-soft); }
+
+  #chat {
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px 20px;
+    max-width: 820px;
+    width: 100%;
+    margin: 0 auto;
+  }
+  .msg { display: flex; margin-bottom: 16px; }
+  .msg.user { justify-content: flex-end; }
+  .bubble {
+    max-width: 78%;
+    padding: 13px 16px;
+    border-radius: 14px;
+    font-size: 14.5px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .msg.user .bubble {
+    background: var(--primary);
+    color: #fff;
+    border-bottom-right-radius: 3px;
+  }
+  .msg.bot .bubble {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-bottom-left-radius: 3px;
+  }
+  sup.ref { color: var(--primary); font-weight: 700; margin-left: 1px; }
+  .citations {
+    margin-top: 12px;
+    padding-top: 11px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--ink2);
+  }
+  .citations .cite-label {
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-size: 12px;
+  }
+  .citations .cite { margin-bottom: 6px; }
+  .citations .cite b { color: var(--primary); }
+  .citations .quote {
+    display: block;
+    margin-top: 2px;
+    padding-left: 10px;
+    border-left: 2px solid var(--primary);
+    font-style: italic;
+  }
+  .typing { color: var(--muted); font-size: 13px; }
+  .error { color: var(--error); font-size: 13px; }
+
+  form#form {
+    background: var(--card);
+    border-top: 1px solid var(--border);
+    padding: 14px 20px 10px;
+  }
+  .input-row { max-width: 820px; margin: 0 auto; display: flex; gap: 8px; }
+  textarea {
+    flex: 1;
+    resize: none;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    background: var(--bg);
+    color: var(--text);
+    padding: 13px 15px;
+    font-size: 14.5px;
+    font-family: inherit;
+    line-height: 1.5;
+    height: 50px;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+  #send {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 11px;
+    padding: 0 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background .2s;
+  }
+  #send:hover:not(:disabled) { background: var(--primary-dark); }
+  #send:disabled { opacity: 0.5; cursor: default; }
+  .disclaimer {
+    max-width: 820px;
+    margin: 8px auto 0;
+    font-size: 10.5px;
+    color: var(--muted);
+    text-align: center;
+    letter-spacing: 0.01em;
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== 사이드바 (대시보드와 동일) ===================== -->
+<aside class="sidebar">
+  <a class="brand" href="/">
+    <span class="logo">◆</span>
+    <span><b>Biz Portal</b><small>Executive Dashboard</small></span>
+  </a>
+  <nav class="side-nav">
+    <div class="side-group">현황</div>
+    <a href="/dashboard/index.html"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V4"/><path d="M4 20h16"/><path d="M8 16v-4"/><path d="M13 16V8"/><path d="M18 16v-6"/></svg><span>종합 현황</span></a>
+    <a href="/dashboard/finance.html"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg><span>재무</span></a>
+    <a href="/dashboard/people.html"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><path d="M16 5.5a3.2 3.2 0 0 1 0 6"/><path d="M17 14.5a5.5 5.5 0 0 1 3.5 5.5"/></svg><span>인력·조직</span></a>
+    <a href="/dashboard/recruiting.html"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.6" fill="currentColor" stroke="none"/></svg><span>채용</span></a>
+    <div class="side-group">도구</div>
+    <a href="/dashboard/simulator.html"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="3" width="15" height="18" rx="2.5"/><path d="M8 7.5h8"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16.5h.01M12 16.5h.01M15.5 16.5h.01"/></svg><span>인건비 시뮬레이터</span></a>
+    <a href="/dashboard/pipeline.html"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 4.5h17l-6.5 8v7l-4 2v-9z"/></svg><span>채용 파이프라인</span></a>
+    <a class="active" href="/chatbot/"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 15a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/></svg><span>HR 챗봇</span></a>
+  </nav>
+  <div class="side-foot">
+    <a href="/"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/></svg><span class="ftxt">포털 홈</span></a>
+  </div>
+</aside>
+
+<!-- ===================== 채팅 화면 ===================== -->
+<div id="app">
+  <header>
+    <div class="head-left">
+      <div>
+        <h1>💬 원호 리더의 HR 정책상담</h1>
+        <p>취업규칙 · 복무규정 · 근로기준법 기반 AI 상담</p>
+      </div>
+    </div>
+  </header>
+
+  <div id="chat">
+    <div class="msg bot"><div class="bubble">안녕하세요! 원호 리더의 HR 정책상담입니다. 🙌
+연차, 휴직, 근무시간, 복리후생 등 사내 규정에 대해 무엇이든 물어보세요.
+
+예시) "배우자 출산휴가는 며칠인가요?" / "경조사 휴가 기준이 궁금해요"</div></div>
+  </div>
+
+  <form id="form">
+    <div class="input-row">
+      <textarea id="input" placeholder="질문을 입력하세요… (Enter 전송, Shift+Enter 줄바꿈)" required></textarea>
+      <button id="send" type="submit">전송</button>
+    </div>
+    <p class="disclaimer">본 답변은 사내 규정 문서에 기반한 참고 정보이며 법적 효력이 없습니다. 정확한 확인은 HR팀에 문의하세요.</p>
+  </form>
+</div>
+
+<script>
+const appEl = document.getElementById("app");
+const chatEl = document.getElementById("chat");
+const formEl = document.getElementById("form");
+const inputEl = document.getElementById("input");
+const sendBtn = document.getElementById("send");
+
+const history = [];
+const appPassword = "";  // 접속 비밀번호 미사용 (포트폴리오 데모 — 서버 APP_PASSWORD 비활성)
+
+inputEl.focus();
+
+/* ---------- 채팅 ---------- */
+function scrollBottom() { chatEl.scrollTop = chatEl.scrollHeight; }
+
+function addUserMsg(text) {
+  const div = document.createElement("div");
+  div.className = "msg user";
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+  bubble.textContent = text;
+  div.appendChild(bubble);
+  chatEl.appendChild(div);
+  scrollBottom();
+}
+
+function addBotMsg(data) {
+  const div = document.createElement("div");
+  div.className = "msg bot";
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+
+  let fullText = "";
+  for (const seg of data.segments) {
+    bubble.appendChild(document.createTextNode(seg.text));
+    fullText += seg.text;
+    for (const r of seg.refs) {
+      const sup = document.createElement("sup");
+      sup.className = "ref";
+      sup.textContent = "[" + r + "]";
+      bubble.appendChild(sup);
+    }
+  }
+
+  if (data.citations.length > 0) {
+    const cites = document.createElement("div");
+    cites.className = "citations";
+    const label = document.createElement("div");
+    label.className = "cite-label";
+    label.textContent = data.citations_label || "근거";
+    cites.appendChild(label);
+    for (const c of data.citations) {
+      const item = document.createElement("div");
+      item.className = "cite";
+      const tag = document.createElement("b");
+      tag.textContent = "[" + c.id + "] ";
+      item.appendChild(tag);
+      item.appendChild(document.createTextNode(c.document + (c.pages ? " · " + c.pages : "")));
+      if (c.cited_text) {
+        const q = document.createElement("span");
+        q.className = "quote";
+        q.textContent = "“" + c.cited_text + "”";
+        item.appendChild(q);
+      }
+      cites.appendChild(item);
+    }
+    bubble.appendChild(cites);
+  }
+
+  div.appendChild(bubble);
+  chatEl.appendChild(div);
+  scrollBottom();
+  return fullText;
+}
+
+/* 모델이 간혹 흘리는 마크다운 기호를 일반 텍스트로 정리(별표·헤딩·불릿·코드) */
+function stripMarkdown(s) {
+  return s
+    .replace(/\*\*([^*]+)\*\*/g, "$1")   // **굵게** → 굵게
+    .replace(/\*\*/g, "")                  // 스트리밍 중 아직 안 닫힌 ** 제거
+    .replace(/^\s*#{1,6}\s+/gm, "")        // ## 제목 기호 제거
+    .replace(/^(\s*)[-*+]\s+/gm, "$1• ")   // - 불릿 → •
+    .replace(/`([^`]+)`/g, "$1")           // `코드` → 코드
+    .replace(/`/g, "");
+}
+
+/* 스트리밍용: 빈 봇 버블을 만들고 텍스트를 덧붙이는 핸들을 반환 */
+function createBotStream() {
+  const div = document.createElement("div");
+  div.className = "msg bot";
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+  const textNode = document.createTextNode("");
+  bubble.appendChild(textNode);
+  div.appendChild(bubble);
+  chatEl.appendChild(div);
+  scrollBottom();
+  let raw = "";
+  return {
+    remove() { div.remove(); },
+    appendText(t) { raw += t; textNode.textContent = stripMarkdown(raw); scrollBottom(); },
+    setCitations(citations, label) {
+      if (!citations || !citations.length) return;
+      const cites = document.createElement("div");
+      cites.className = "citations";
+      const lab = document.createElement("div");
+      lab.className = "cite-label";
+      lab.textContent = label || "근거";
+      cites.appendChild(lab);
+      for (const c of citations) {
+        const item = document.createElement("div");
+        item.className = "cite";
+        const tag = document.createElement("b");
+        tag.textContent = "[" + c.id + "] ";
+        item.appendChild(tag);
+        item.appendChild(document.createTextNode(c.document + (c.pages ? " · " + c.pages : "")));
+        if (c.cited_text) {
+          const q = document.createElement("span");
+          q.className = "quote";
+          q.textContent = "“" + c.cited_text + "”";
+          item.appendChild(q);
+        }
+        cites.appendChild(item);
+      }
+      bubble.appendChild(cites);
+      scrollBottom();
+    }
+  };
+}
+
+function addNotice(text, isError) {
+  const div = document.createElement("div");
+  div.className = "msg bot";
+  const bubble = document.createElement("div");
+  bubble.className = "bubble" + (isError ? " error" : " typing");
+  bubble.textContent = text;
+  div.appendChild(bubble);
+  chatEl.appendChild(div);
+  scrollBottom();
+  return div;
+}
+
+formEl.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const question = inputEl.value.trim();
+  if (!question) return;
+
+  inputEl.value = "";
+  sendBtn.disabled = true;
+  inputEl.disabled = true;
+
+  addUserMsg(question);
+  history.push({ role: "user", content: question });
+  const typing = addNotice("답변을 작성하는 중…", false);
+
+  let stream = null;
+  try {
+    const res = await fetch("/api/chat/stream", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-App-Password": appPassword,
+      },
+      body: JSON.stringify({ messages: history }),
+    });
+
+    if (!res.ok || !res.body) {
+      typing.remove();
+      const err = await res.json().catch(() => ({}));
+      addNotice(err.detail || "오류가 발생했습니다. 잠시 후 다시 시도해 주세요.", true);
+      history.pop();
+      return;
+    }
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buf = "", fullText = "", errored = false;
+    let citations = null, citationsLabel = "";
+    let firstToken = true;
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      let idx;
+      while ((idx = buf.indexOf("\n\n")) >= 0) {
+        const raw = buf.slice(0, idx).trim();
+        buf = buf.slice(idx + 2);
+        if (!raw.startsWith("data:")) continue;
+        const payload = raw.slice(5).trim();
+        if (payload === "[DONE]") continue;
+        let obj;
+        try { obj = JSON.parse(payload); } catch (_) { continue; }
+        if (obj.delta) {
+          if (firstToken) { typing.remove(); stream = createBotStream(); firstToken = false; }
+          fullText += obj.delta;
+          stream.appendText(obj.delta);
+        } else if (obj.error) {
+          if (firstToken) { typing.remove(); firstToken = false; }
+          if (!stream) stream = createBotStream();
+          stream.appendText((fullText ? "\n\n" : "") + "[" + obj.error + "]");
+          errored = true;
+        } else if (obj.citations) {
+          citations = obj.citations;
+          citationsLabel = obj.citations_label;
+        }
+      }
+    }
+
+    if (firstToken) typing.remove();
+    if (stream && citations) stream.setCitations(citations, citationsLabel);
+    if (fullText && !errored) {
+      history.push({ role: "assistant", content: fullText });
+    } else {
+      history.pop();
+    }
+  } catch (e2) {
+    typing.remove();
+    if (stream) stream.remove();
+    addNotice("서버에 연결할 수 없습니다.", true);
+    history.pop();
+  } finally {
+    sendBtn.disabled = false;
+    inputEl.disabled = false;
+    inputEl.focus();
+  }
+});
+
+inputEl.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    formEl.requestSubmit();
+  }
+});
+</script>
+</body>
+</html>
